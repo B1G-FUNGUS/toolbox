@@ -8,16 +8,30 @@ Flag flist[] = {
 	{'b', "bflag", false}
 };
 
+// Unfortunately, you need to do this in order for two vectors of the same type
+// to be treated like they have the same type.
+typedef vec(char) cvec;
+
+cvec tostrvec(char *instr) {
+	cvec outstr;
+	vinit(outstr);
+	for (int i = 0; instr[i] != '\0'; i++) {
+		append(outstr, instr[i]);
+	}
+	append(outstr, '\0');
+	return outstr;
+}
+
 void main(int argc, char *argv[]) {
 
 	// clargs example
 	size_t flagc = sizeof(flist)/sizeof(Flag);
-	SArgV *sargv;
+	SArgV sargv;
 	sargv = mksargs(argc, argv, flist, flagc);
 
-	for (size_t i = 0; i < sargv->length; i++) {
-		Arg *arg = &(sargv->alist[i]);
-		if (arg->flag == 'h') {
+	for (size_t i = 0; i < sargv.length; i++) {
+		Arg arg = sargv.v[i];
+		if (arg.flag == 'h') {
 			for (size_t i = 0; i < flagc; i++) {
 				printf("-%c, --%s", flist[i].shortname,
 					flist[i].longname);
@@ -25,14 +39,14 @@ void main(int argc, char *argv[]) {
 				printf("\n");
 					
 			}
-		} else if (arg->flag) {
-			if (arg->str != NULL) {
-				printf("-%c %s\n", arg->flag, arg->str);
+		} else if (arg.flag) {
+			if (arg.str != NULL) {
+				printf("-%c %s\n", arg.flag, arg.str);
 			} else {
-				printf("-%c\n", arg->flag);
+				printf("-%c\n", arg.flag);
 			}
 		} else {
-			printf("%s\n", arg->str);
+			printf("%s\n", arg.str);
 		}
 	}
 	
@@ -50,5 +64,10 @@ void main(int argc, char *argv[]) {
 		printf("%f\n", output);
 	}
 
+	cvec str = tostrvec("example string");
+	printf("%s\n", str.v);
+
 	vfree(fvec);
+	vfree(str);
+
 }

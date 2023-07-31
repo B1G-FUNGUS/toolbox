@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "vector.h"
 
 // This library returns a lot of values which are pointers to the strings in
 // 'argv.' It's recommended to not free 'argv' until you have also finished
@@ -23,11 +24,7 @@ typedef struct arg {
 	char *str;
 } Arg;
 
-typedef struct simple_argv {
-	Arg *alist;
-	size_t length;
-} SArgV;
-
-SArgV *mksargs(int argc, char *argv[], Flag flist[], int flist_length);
+typedef vec(Arg) SArgV;
+SArgV mksargs(int argc, char *argv[], Flag flist[], int flist_length);
 
 #endif

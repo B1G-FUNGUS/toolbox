@@ -4,17 +4,6 @@
 
 size_t fl_length;
 Flag *fl;
-SArgV *sargv;
-
-void append(Arg arg) {
-	sargv->alist = (Arg *) reallocarray(sargv->alist, ++(sargv->length),
-		sizeof(Arg));
-	if (sargv->alist == NULL) {
-		printf("Ran out of memory!\n");
-		exit(1);
-	}
-	sargv->alist[sargv->length-1] = arg;
-}
 
 // Looping through all the flags in the next two functions obviously isn't
 // efficient, but you can have at max 255 different flags so I'm not worried
@@ -23,7 +12,6 @@ Flag *get_lflag(char *str) {
 	for (int i = 0; i < fl_length; i++) {
 		if (strcmp(str, fl[i].longname) == 0) {
 			return &fl[i];
-					printf("a\n");
 		}
 	}
 	printf("Unknown Flag: --%s\n", str);
@@ -65,11 +53,12 @@ char *sflag_val(Flag *flag, int *aip, int argc, char *argv[], int *cip) {
 	}
 }
 
-SArgV *mksargs(int argc, char *argv[], Flag flist[], int flist_length) {
+SArgV mksargs(int argc, char *argv[], Flag flist[], int flist_length) {
 	argc--; // TODO i was under the impression argc started at 0
 	fl = flist;
 	fl_length = flist_length;
-	sargv = (SArgV *) malloc (sizeof(SArgV));
+	SArgV sargv;
+	vinit(sargv);
 	for (int ai = 1; ai <= argc; ai++) {
 		if (argv[ai][0] == '-') {
 			if (argv[ai][1] == '-') {
@@ -78,7 +67,7 @@ SArgV *mksargs(int argc, char *argv[], Flag flist[], int flist_length) {
 				char *str;
 				str = lflag_val(flag, &ai, argc, argv);
 				Arg arg = {flag->shortname, str};
-				append(arg);
+				append(sargv, arg);
 			} else {
 				for (int ci = 1; ci && argv[ai][ci]; ci++) {
 					Flag *flag;
@@ -87,12 +76,12 @@ SArgV *mksargs(int argc, char *argv[], Flag flist[], int flist_length) {
 					str = sflag_val(flag, &ai, argc, argv, 
 						&ci);
 					Arg arg = {flag->shortname, str};
-					append(arg);
+					append(sargv, arg);
 				}
 			}
 		} else {
 			Arg arg = {0, argv[ai]};
-			append(arg);
+			append(sargv, arg);
 		}
 	}
 	return sargv;
