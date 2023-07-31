@@ -4,7 +4,9 @@ A compilation of general purpose C libraries.
 
 # TODO
 
-- add vector headers
+- add vectors with buffers
+
+- make clargs use vectors
 
 - fix `//TODO`'s
 

@@ -9,6 +9,8 @@ Flag flist[] = {
 };
 
 void main(int argc, char *argv[]) {
+
+	// clargs example
 	size_t flagc = sizeof(flist)/sizeof(Flag);
 	SArgV *sargv;
 	sargv = mksargs(argc, argv, flist, flagc);
@@ -33,4 +35,20 @@ void main(int argc, char *argv[]) {
 			printf("%s\n", arg->str);
 		}
 	}
+	
+	// vector example
+	vec(float) fvec;
+	vinit(fvec);
+
+	for (int i = 0; i < 30; i++) {
+		float result = i/3.0;
+		append(fvec, result);
+	}
+
+	for (size_t i = 0; i < fvec.length; i++) {
+		float output = getelem(fvec, i);
+		printf("%f\n", output);
+	}
+
+	vfree(fvec);
 }
