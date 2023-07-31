@@ -13,10 +13,7 @@ A compilation of general purpose C libraries.
 
 - resizing command for vectors
 
-- make clargs use vectors
-
 - fix `//TODO`'s
-
 
 # Known Issues
 
